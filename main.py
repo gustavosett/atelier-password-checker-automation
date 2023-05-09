@@ -17,12 +17,13 @@ service = webdriver.chrome.service.Service(executable_path='chromedriver.exe')
 def process_func(accounts):
     driver = webdriver.Chrome(service=service, options=options)
     driver.set_window_size(1280, 768)
-    driver.minimize_window()
+    # driver.minimize_window()
+    accounts_list = accounts.tolist()
     for account in accounts:
-        if Checker(driver, account[0], account[1]): # Se Checker retornar True
-            accounts.pop(0) # Remover o primeiro elemento da lista de contas
-            with open('Lista de contas.txt', 'w') as f:
-                f.write('\n'.join([f'{acc[0]}:{acc[1]}' for acc in accounts])) # Reescrever a lista no arquivo
+        Checker(driver, account[0], account[1])
+        accounts_list = accounts_list[1:] # Remover o primeiro elemento da lista de contas
+        with open('Lista de contas.txt', 'w') as f:
+            f.write('\n'.join([f'{acc[0]}:{acc[1]}' for acc in accounts])) # Reescrever a lista no arquivo
     driver.quit()
 
 # Inicia a criação de processos
@@ -56,19 +57,19 @@ def Checker(driver, username, password):
         driver.get("https://atelier801.com/login?redirect=https%3A%2F%2Fatelier801.com%2Findex") # Carrega o site
 
         try:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="auth_login_1"]')))
+            WebDriverWait(driver, 6).until(EC.presence_of_element_located((By.XPATH, '//*[@id="auth_login_1"]')))
             driver.find_element(By.XPATH, '//*[@id="auth_login_1"]') \
                 .send_keys(username) #Insira o nome de usuário
 
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="auth_pass_1"]')))
+            WebDriverWait(driver, 6).until(EC.presence_of_element_located((By.XPATH, '//*[@id="auth_pass_1"]')))
             driver.find_element(By.XPATH, '//*[@id="auth_pass_1"]') \
                 .send_keys(password) #Insira a senha
 
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="rester_connecte_1"]')))
+            WebDriverWait(driver, 6).until(EC.presence_of_element_located((By.XPATH, '//*[@id="rester_connecte_1"]')))
             driver.find_element(By.XPATH, '//*[@id="rester_connecte_1"]') \
                 .click() #CLique para manter conectado
 
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="corps"]/div[3]/div/form[1]/fieldset/div[4]/button')))
+            WebDriverWait(driver, 6).until(EC.presence_of_element_located((By.XPATH, '//*[@id="corps"]/div[3]/div/form[1]/fieldset/div[4]/button')))
             driver.find_element(By.XPATH, '//*[@id="corps"]/div[3]/div/form[1]/fieldset/div[4]/button') \
                 .click() #Clique para logar
 
